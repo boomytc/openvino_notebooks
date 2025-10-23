@@ -112,3 +112,9 @@ pipcache_openvino/
 
 # PySpelling generated dictionary
 .ci/spellcheck/dictionary
+
+# ide ignore
+.kiro
+.trae
+.copilot
+AGENT.md
