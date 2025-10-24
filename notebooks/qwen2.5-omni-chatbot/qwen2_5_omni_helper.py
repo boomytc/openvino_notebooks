@@ -47,15 +47,15 @@ def model_has_state(ov_model: ov.Model):
 
 def model_has_input_output_name(ov_model: ov.Model, name: str):
     """
-    Helper function for checking that model has specified input or output name
+    用于检查模型是否具有指定输入或输出名称的辅助函数
 
-    Parameters:
-      ov_model (ov.Model):
-      name (str):
-          name of input or output
+    参数:
+        ov_model (ov.Model):
+        name (str):
+            输入或输出的名称
 
-    Returns:
-      True if input or output with requested name exists else False
+        返回:
+        如果存在具有请求名称的输入或输出则返回 True，否则返回 False
     """
     return name in sum([list(t.get_names()) for t in ov_model.inputs + ov_model.outputs], [])
 
@@ -67,24 +67,19 @@ def fuse_cache_reorder(
     gather_dim: int,
 ):
     """
-    Fuses reored_cache during generate cycle into ov.Model. Used with stateful models, because we can not modify model state directly.
+    在生成周期中将 fuses reored_cache 融入 ov.Model。用于有状态模型，因为我们不能直接修改模型状态。
 
-    Adds a new beam_idx parameter and Gather op per each kv-cache input in a given model.
-    Should be run before make_stateful. Implements optimumum's _reorder_cache
-    inside the model in the beginning of each iteration.
-    Gather works along given gather_dim dimension that may vary from model to model.
-    KV-cache inputs are identified based on names in key_value_input_names.
-    Append the new beam_idx parameter to not_kv_inputs.
+    为给定模型中的每个 kv-cache 输入添加一个新的 beam_idx 参数和 Gather 操作。应在 make_stateful 之前运行。在每次迭代开始时，在模型内部实现 optimumum 的 _reorder_cache。Gather 沿给定的 gather_dim 维度工作，该维度可能因模型而异。KV-cache 输入根据 key_value_input_names 中的名称进行识别。将新的 beam_idx 参数附加到 not_kv_inputs。
 
-    Parameters:
+    参数：
       ov_model (`ov.Model`):
-          openvino model for processing
+          用于处理的OpenVINO模型
       not_kv_inputs (`list[str]`):
-          list of input nodes in model that not related to past key values
+          模型中与历史键值无关的输入节点列表
       key_value_input_names (`list[str]`):
-          list of names for key value input layers
+          键值输入层的名称列表
       gather_dim (int):
-          dimension for gathering cache during reorder pass
+          在重排过程中收集缓存的维度
     """
 
     if model_has_input_output_name(ov_model, "beam_idx"):
@@ -94,7 +89,7 @@ def fuse_cache_reorder(
     beam_idx.output(0).get_tensor().add_names({"beam_idx"})  # why list is not accepted?
     ov_model.add_parameters([beam_idx])
     not_kv_inputs.append(ov_model.inputs[-1])
-    # Go over all cache parameters and fuse _reorder_cache with indices provided by the new parameter beam_idx
+    # 遍历所有缓存参数，并将 _reorder_cache 与新参数 beam_idx 提供的索引进行融合
     for input_name in key_value_input_names:
         parameter_output_port = ov_model.input(input_name)
         consumers = parameter_output_port.get_target_inputs()
@@ -106,13 +101,13 @@ def fuse_cache_reorder(
 
 def build_state_initializer(ov_model: ov.Model, batch_dim: int):
     """
-    Build initialization ShapeOf Expression for all ReadValue ops
+    为所有 ReadValue 操作构建初始化 ShapeOf 表达式
 
-    Parameters:
+    参数:
       ov_model (ov.Model):
-          openvino model
+          OpenVINO 模型
       batch_dim (int):
-          index of dimension corresponding to batch size
+          对应批量大小的维度索引
     """
     input_ids = ov_model.input("inputs_embeds")
     batch = opset13.gather(
@@ -141,23 +136,23 @@ def make_stateful(
     num_beams_and_batch: int = None,
 ):
     """
-    Hides kv-cache inputs and outputs inside the model as variables.
+    将模型中的kv-cache输入和输出作为变量隐藏起来。
 
-    Parameters:
+    参数：
         ov_model (ov.Model):
-            openvino model
+            OpenVINO模型
         not_kv_inputs (`list[str]`):
-            list of input nodes in model that not related to past key values
+            模型中与历史键值无关的输入节点列表
         key_value_input_names (`list[str]`):
-            list of names for key value input layers
+            键值输入层的名称列表
         key_value_output_names (`list[str]`):
-            list of names for key value input layers
+            键值输出层的名称列表
         batch_dim (int):
-            index of batch dimension in key value layers
+            键值层中批次维度的索引
         num_attention_heads (int):
-            number of attention heads for batch dimension initialization
+            用于批次维度初始化的注意力头数量
         num_beams_an_batch (int):
-            precalculated number of beams and batch for shapes initialization
+            用于形状初始化的预计算的beam数量和批次数量
     """
     from openvino._offline_transformations import apply_make_stateful_transformation
 
