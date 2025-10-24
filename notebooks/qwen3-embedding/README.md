@@ -1,23 +1,23 @@
-# Text Embedding and Reranker with Qwen3 and OpenVINO
+# 使用Qwen3和OpenVINO进行文本嵌入和重排序
 
-The Qwen3 Embedding model series is the latest proprietary model of the Qwen family, specifically designed for text embedding and ranking tasks. Building upon the dense foundational models of the Qwen3 series, it provides a comprehensive range of text embeddings and reranking models in various sizes (0.6B, 4B, and 8B). This series inherits the exceptional multilingual capabilities, long-text understanding, and reasoning skills of its foundational model. The Qwen3 Embedding series represents significant advancements in multiple text embedding and ranking tasks, including text retrieval, code retrieval, text classification, text clustering, and bitext mining.
+Qwen3 Embedding模型系列是通义千问家族最新的专有模型，专门设计用于文本嵌入和排序任务。该系列基于Qwen3系列的密集基础模型，提供多种规模（0.6B、4B和8B）的文本嵌入和重排序模型。该系列继承了其基础模型卓越的多语言能力、长文本理解能力和推理能力。Qwen3 Embedding系列在多个文本嵌入和排序任务中取得了显著进展，包括文本检索、代码检索、文本分类、文本聚类和双语文本挖掘。
 
 <img src="https://qianwen-res.oss-accelerate.aliyuncs.com/logo_qwen_embedding.png" width="400"/>
 
-In this tutorial we consider how to convert and optimize Qwen3 Embedding and Reranker model using OpenVINO.
+在本教程中，我们将探讨如何使用OpenVINO转换和优化Qwen3 Embedding和重排序模型。
 
-### Notebook Contents
+### 笔记本内容
 
-The tutorial consists of the following steps:
+本教程包含以下步骤：
 
-- Prerequisites
-- Select model
-- Convert model using Optimum Intel
-- Run OpenVINO model inference with Optimum-intel
+- 前置条件
+- 选择模型
+- 使用Optimum Intel转换模型
+- 使用Optimum-intel运行OpenVINO模型推理
 
-## Installation Instructions
+## 安装说明
 
-This is a self-contained example that relies solely on its own code.</br>
-We recommend running the notebook in a virtual environment. You only need a Jupyter server to start.
-For further details, please refer to [Installation Guide](../../README.md).
+这是一个自包含的示例，仅依赖于其自身的代码。</br>
+我们建议在虚拟环境中运行此笔记本。您只需要一个Jupyter服务器即可开始。
+更多详细信息，请参阅[安装指南](../../README.md)。
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=5b5a4db0-7875-4bfb-bdbd-01698b5b1a77&file=notebooks/qwen3-embedding/README.md" />
